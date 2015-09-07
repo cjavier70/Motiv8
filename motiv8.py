@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, g, render_template, url_for, request, Response, jsonify
 import _mysql
 db = _mysql.connect("motiv8instance.cwkcvq4ycfyc.us-west-2.rds.amazonaws.com","admin","motivate","innodb")
 import sys 
-sys.stdout=open('log/output.log', 'w')
+sys.stdout=open('/var/www/motiv8/log/output.log', 'w')
 
 app = Flask(__name__)
 
@@ -10,11 +10,16 @@ app = Flask(__name__)
 @app.route('/user', methods=['GET','POST'])
 def index():
     if request.method=='GET':
-        return "Welcome to Motiv8 API"
+        return "Welcome sir to Motiv8 API"
     else:
-        body = "Your json passed me %s" % request.get_json().get('firstName', '')
         print "LOOK"
         print request.get_json()
+        try:
+            body = "Your json passed me %s" % request.get_json().get('firstName', '')
+        except:
+            sys.stdout.close()
+            return 'Error'
+
         #db.query("INSERT INTO User (firstName, lastName, accessToken) VALUES ('Gabrielle', 'Javier', 'fake2')")
         return body
 
