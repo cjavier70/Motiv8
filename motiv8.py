@@ -10,15 +10,16 @@ app = Flask(__name__)
 @app.route('/user', methods=['GET','POST'])
 def index():
     if request.method=='GET':
-        return "Welcome sir to Motiv8 API"
+        return "Welcome to Motiv8 API"
     else:
-        print "LOOK"
-        print request.get_json()
         try:
-            body = "Your json passed me %s" % request.get_json().get('firstName', '')
+            firstName = request.get_json().get('firstName', '')
+            lastName = request.get_json().get('lastName', '')
+            accessToken = request.get_json().get('accessToken', '')
         except:
             sys.stdout.close()
-            return 'Error'
+            return 'Error: Fields are firstName, lastName, accessToken. \
+             You likely did not pass json to this URL'
 
         #db.query("INSERT INTO User (firstName, lastName, accessToken) VALUES ('Gabrielle', 'Javier', 'fake2')")
         return body
