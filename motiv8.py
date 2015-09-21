@@ -3,7 +3,7 @@ import MySQLdb
 import sys 
 import atexit
 db = MySQLdb.connect("motiv8instance.cwkcvq4ycfyc.us-west-2.rds.amazonaws.com","admin","motivate","innodb")
-sys.stdout=open('/var/www/motiv8/log/output.log', 'a+w')
+sys.stdout=open('./log/output.log', 'a+w', 0)
 
 app = Flask(__name__)
 
@@ -39,13 +39,11 @@ def postUser():
         db.commit()
     except:
         return "Insert Into User Threw an exception"
-    sys.stdout.flush()
-    print "whats problem"
-    return "%s" % lastId
+    return "%d" % lastId
 
 def clean():
     print "Clean complete"
-    sys.stdout.flush()
+    #sys.stdout.flush()
     sys.stdout.close()
 
 atexit.register(clean)
