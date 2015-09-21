@@ -10,6 +10,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    fromField = request.headers.get('From')
+    print fromField
     return "Welcome to Motiv8 API"
 
 @app.route('/user', methods=['GET','POST'])
