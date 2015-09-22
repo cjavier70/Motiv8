@@ -35,8 +35,8 @@ def postUser():
         return 'Error: Fields are firstName, lastName, accessToken. \
          If you sent those, you likely did not pass json to this URL'
     try:
-        sql = "INSERT INTO User (firstName, lastName, accessToken) VALUES ('%s', '%s', '%s')" \
-         % (firstName, lastName, accessToken)
+        sql = "INSERT INTO User (firstName, lastName, accessToken, fbId) VALUES ('%s', '%s', '%s', '%s')" \
+         % (firstName, lastName, accessToken, fbId)
         cur = db.cursor()
         cur.execute(sql)
         lastId = cur.lastrowid
