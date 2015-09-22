@@ -2,6 +2,9 @@ from flask import Flask, g, render_template, url_for, request, Response, jsonify
 import MySQLdb
 import sys 
 import atexit
+from mockFacebook import mockFriends
+
+
 db = MySQLdb.connect("motiv8instance.cwkcvq4ycfyc.us-west-2.rds.amazonaws.com","admin","motivate","innodb")
 sys.stdout=open('./log/output.log', 'a+w', 0)
 
@@ -14,7 +17,7 @@ def index():
     print fromField
     return "Welcome to Motiv8 API"
 
-@app.route('/user', methods=['GET','POST'])
+@app.route('/user', methods=['GET', 'POST'])
 def user():
     if request.method=='GET':
         return "Welcome to Motiv8 API"
@@ -27,6 +30,7 @@ def postUser():
         firstName = request.get_json().get('firstName', '')
         lastName = request.get_json().get('lastName', '')
         accessToken = request.get_json().get('accessToken', '')
+        fbId = request.get_json().get('fbId', '')
     except:
         return 'Error: Fields are firstName, lastName, accessToken. \
          If you sent those, you likely did not pass json to this URL'
@@ -40,6 +44,9 @@ def postUser():
     except:
         return "Insert Into User Threw an exception"
     return "%d" % lastId
+
+def getLeaderBoard():
+    return "hello"
 
 def clean():
     print "Clean complete"
