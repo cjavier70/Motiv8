@@ -6,7 +6,7 @@ from mockFacebook import mockFriends
 
 
 db = MySQLdb.connect("motiv8instance.cwkcvq4ycfyc.us-west-2.rds.amazonaws.com","admin","motivate","innodb")
-sys.stdout=open('./log/output.log', 'a+w', 0)
+sys.stdout=open('/var/www/motiv8/log/output.log', 'a+w', 0)
 
 app = Flask(__name__)
 
