@@ -27,22 +27,23 @@ def user():
 def postUser():
     r = None
     try:
-        firstName = request.get_json().get('firstName', '')
-        lastName = request.get_json().get('lastName', '')
         accessToken = request.get_json().get('accessToken', '')
         fbId = request.get_json().get('fbId', '')
+        firstName = request.get_json().get('firstName', '')
+        lastName = request.get_json().get('lastName', '')
     except:
         return 'Error: Fields are firstName, lastName, accessToken. \
          If you sent those, you likely did not pass json to this URL'
     try:
+        #getName(fbId, accessToken);
         sql = "INSERT INTO User (firstName, lastName, accessToken, fbId) VALUES ('%s', '%s', '%s', '%s')" \
          % (firstName, lastName, accessToken, fbId)
         cur = db.cursor()
         cur.execute(sql)
         lastId = cur.lastrowid
         db.commit()
-    except:
-        return "Insert Into User Threw an exception"
+    except Exception as e:
+        return "Insert Into User Threw an exception: %s" % e
     return "%d" % lastId
 
 def getLeaderBoard():
