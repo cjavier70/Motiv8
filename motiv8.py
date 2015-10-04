@@ -29,7 +29,7 @@ def user():
 
 @app.route('/leaderboard/<userid>', methods=['GET'])
 def leaderboard(userid):
-    print "Received Leaderboard request at milli: {0}".format(current_milli_time() % 1000)
+    print "Received Leaderboard request at milli: {0}".format(current_milli_time() % 10000)
     return getLeaderBoard(userid)
 
 def postUser():
@@ -58,7 +58,7 @@ def getLeaderBoard(userId):
         score = getFitPoints(user.id)
         friendDict[user.getFullName()] = score
     #TODO: Logging
-    print "Responded Leaderboard request at milli: {0}".format(current_milli_time() % 1000)
+    print "Responded Leaderboard request at milli: {0}".format(current_milli_time() % 10000)
     od =  OrderedDict(sorted(friendDict.items(), key = lambda t: t[1]))
     return json.dumps(od)
 
