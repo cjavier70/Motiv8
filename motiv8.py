@@ -6,18 +6,28 @@ from sqlAdapter import *
 from collections import OrderedDict
 import time
 import json
+from motiv8Logger import getLogger
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 #from mockFacebook import mockFriends
 
-sys.stdout=open('/var/www/motiv8/log/output.log', 'a+w', 0)
+logDescriptor = None
+logger = None
 
 app = Flask(__name__)
 
+@app.before_first_request
+def setup():
+    global logDescriptor
+    logDescriptor = open('/var/www/motiv8/log/output.log', 'a+w', 0)
+    global logger
+    logger = getLogger(request.headers.get('From'), logDescriptor)
+    print "hi"
+
 @app.route('/')
 def index():
-    fromField = request.headers.get('From')
-    print fromField
+    # logger = getLogger(request.headers.get('From'), logDescriptor)
+    logger.error("Ello ELlo 2")
     return "Welcome to Motiv8 API"
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -29,7 +39,7 @@ def user():
 
 @app.route('/leaderboard/<userid>', methods=['GET'])
 def leaderboard(userid):
-    print "Received Leaderboard request at milli: {0}".format(current_milli_time() % 10000)
+    logger.info("Received Leaderboard request at milli: {0}".format(current_milli_time() % 10000))
     return getLeaderBoard(userid)
 
 def postUser():
@@ -57,8 +67,7 @@ def getLeaderBoard(userId):
         user = getUser(friendId)
         score = getFitPoints(user.id)
         friendDict[user.getFullName()] = score
-    #TODO: Logging
-    print "Responded Leaderboard request at milli: {0}".format(current_milli_time() % 10000)
+    logger.info("Responded Leaderboard request at milli: {0}".format(current_milli_time() % 10000))
     od =  OrderedDict(sorted(friendDict.items(), key = lambda t: t[1]))
     return json.dumps(od)
 
@@ -79,8 +88,8 @@ def createUser(firstName, lastName, accessToken, fbId):
 
 def clean():
     print "Clean complete"
-    #sys.stdout.flush()
-    sys.stdout.close()
+    sys.stdout.flush()
+    logDescriptor.close()
 
 atexit.register(clean)
 
