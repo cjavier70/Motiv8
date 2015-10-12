@@ -19,6 +19,7 @@ def setup():
     global logger
     motiv8Logger.init(request.headers.get('From'))
     logger = motiv8Logger.adapter
+    logger.debug("Reached slash endpoint")
 
 @app.route('/')
 def index():
