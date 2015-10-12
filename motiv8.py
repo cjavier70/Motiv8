@@ -6,28 +6,23 @@ from sqlAdapter import *
 from collections import OrderedDict
 import time
 import json
-from motiv8Logger import getLogger
+import motiv8Logger
 
 current_milli_time = lambda: int(round(time.time() * 1000))
-#from mockFacebook import mockFriends
-
-logDescriptor = None
-logger = None
+motiv8Logger.init("Janitor")
+logger = motiv8Logger.adapter
 
 app = Flask(__name__)
 
 @app.before_first_request
 def setup():
-    global logDescriptor
-    logDescriptor = open('/var/www/motiv8/log/output.log', 'a+w', 0)
     global logger
-    logger = getLogger(request.headers.get('From'), logDescriptor)
-    print "hi"
+    motiv8Logger.init(request.headers.get('From'))
+    logger = motiv8Logger.adapter
 
 @app.route('/')
 def index():
-    # logger = getLogger(request.headers.get('From'), logDescriptor)
-    logger.error("Ello ELlo 2")
+    logger.debug("Hit slash endpoint", extra={'userId': 'hi'})
     return "Welcome to Motiv8 API"
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -39,7 +34,7 @@ def user():
 
 @app.route('/leaderboard/<userid>', methods=['GET'])
 def leaderboard(userid):
-    logger.info("Received Leaderboard request at milli: {0}".format(current_milli_time() % 10000))
+    logger.warning("Received Leaderboard request at milli: {0}".format(current_milli_time() % 10000))
     return getLeaderBoard(userid)
 
 def postUser():
@@ -85,11 +80,9 @@ def createUser(firstName, lastName, accessToken, fbId):
 
     return userId
 
-
 def clean():
-    print "Clean complete"
+    logger.info("Clean complete", extra={'userId': 'hi'})
     sys.stdout.flush()
-    logDescriptor.close()
 
 atexit.register(clean)
 

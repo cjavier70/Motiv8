@@ -1,32 +1,30 @@
 __author__ = 'cameronjavier'
 import logging
 
-class AppFilter(logging.Filter):
+class CustomAdapter(logging.LoggerAdapter):
+    """
+    This example adapter expects the passed in dict-like object to have a
+    'connid' key, whose value in brackets is prepended to the log message.
+    """
+    def process(self, msg, kwargs):
+        return '[%s] %s' % (self.extra['connid'], msg), kwargs
 
+class init():
     def __init__(self, whoFrom):
-        self.whoFrom = whoFrom
+        logging.basicConfig(filename="/var/www/motiv8/log/output.log",
+                            level=logging.DEBUG,
+                            format='%(asctime)s : %(message)s',
+                            datefmt='%a, %d %b %Y %H:%M:%S')
+        logger = logging.getLogger(__name__)
+        # logger.addFilter(AppFilter(whoFrom))
 
-    def filter(self, record):
-        record.userId = self.whoFrom
-        return True
+        # syslog = logging.StreamHandler(stream)
+        # formatter = logging.Formatter('%(asctime)s %(userId)s : %(message)s')
+        # syslog.setFormatter(formatter)
+        # logger.addHandler(syslog)
 
-
-def getLogger(whoFrom, stream):
-
-    logger = logging.getLogger(__name__)
-    logger.addFilter(AppFilter(whoFrom))
-    syslog = logging.StreamHandler(stream)
-    formatter = logging.Formatter('%(asctime)s %(userId)s : %(message)s')
-    syslog.setFormatter(formatter)
-    logger.setLevel(logging.INFO)
-    logger.addHandler(syslog)
-    # logging.basicConfig(filename="/var/www/motiv8/log/output.log",
-    #                     level=logging.DEBUG,
-    #                     datefmt='%a, %d %b %Y %H:%M:%S')
-    return logger
-
-
-
-
-
-
+        # logger.info = lambda msg: logger.info(msg, extra={'userId': whoFrom})
+        # logger.debug = lambda msg: logger.debug(msg, extra={'userId': whoFrom})
+        # logger.warning = lambda msg: logger.warning(msg, extra={'userId': whoFrom})
+        global adapter
+        adapter = CustomAdapter(logger, {'connid': whoFrom})

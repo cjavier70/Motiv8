@@ -16,7 +16,7 @@ def getFriendList(userId):
     cur = db.cursor()
     cur.execute(sql)
     if(cur.rowcount == 0):
-        return printAndReturn("No friendList entry for id {0}".format(userId))
+        return printAndExit("No friendList entry for id {0}".format(userId))
     friends = cur.fetchall()[0][1]
     return friends.split(", ")
 
@@ -27,7 +27,7 @@ def getFitPoints(userId):
     cur = db.cursor()
     cur.execute(sql)
     if(cur.rowcount == 0):
-        return printAndReturn("No fitPoints entry for id {0}".format(userId))
+        return printAndExit("No fitPoints entry for id {0}".format(userId))
     return cur.fetchall()[0][0]
 
 def getUser(userId):
@@ -35,7 +35,7 @@ def getUser(userId):
     cur = db.cursor()
     cur.execute(sql)
     if(cur.rowcount == 0):
-        return printAndReturn("No user entry for id {0}".format(userId))
+        return printAndExit("No user entry for id {0}".format(userId))
     userData = cur.fetchall()[0]
     return User(userData[0], userData[1], userData[2], userData[3], userData[4])
 
